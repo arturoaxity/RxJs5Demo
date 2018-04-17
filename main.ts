@@ -1,16 +1,26 @@
 import { Observable, Observer } from "rxjs";
-let source = Observable.fromEvent(document,'mousemove').map((event:MouseEvent) => {
-    return {
-        x:event.clientX,
-        y: event.clientY
-    }
-}).filter(elemen => {
-    return elemen.x > 500;
-});
 
-source.subscribe(
+let ouput = document.getElementById("output");
+let button = document.getElementById("button");
+
+let click = Observable.fromEvent(button,'click');
+function load(url :string){
+let xhr = new XMLHttpRequest();
+xhr.addEventListener('load',() =>{
+let jsonStar =JSON.parse(xhr.responseText);
+jsonStar.forEach(element => {
+    let div = document.createElement('div');
+    div.innerText = element.name;
+    ouput.appendChild(div);
+});
+});
+xhr.open('GET', url);
+xhr.send();
+}
+click.subscribe(
     value => {
-        console.log(`value: ${value.x} ${value.y}`);
+        console.log(`click`);
+        load("starwars.json");
     },
     error => {
         console.log(`Error: ${error}`);
