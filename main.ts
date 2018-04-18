@@ -1,26 +1,50 @@
-import { Observable, Observer } from "rxjs";
 
+import { Observable, Observer } from "rxjs";
+import { filter } from "rxjs/operators";
+import { max } from "rxjs/operator/max";
+
+interface ServicePersona{
+    getAllPerson(url : string):any;
+}
 let ouput = document.getElementById("output");
 let button = document.getElementById("button");
+let click = Observable.fromEvent(button, 'click');
 
-let click = Observable.fromEvent(button,'click');
-function load(url :string){
-let xhr = new XMLHttpRequest();
-xhr.addEventListener('load',() =>{
-let jsonStar =JSON.parse(xhr.responseText);
-jsonStar.forEach(element => {
-    let div = document.createElement('div');
-    div.innerText = element.name;
-    ouput.appendChild(div);
-});
-});
-xhr.open('GET', url);
-xhr.send();
+class ServicePersonaImpl implements ServicePersona {
+    getAllPerson(url: string) {
+        return Observable.create(Observer => {
+            let xhr = new XMLHttpRequest();
+            xhr.addEventListener('load', () => {
+                let fileJoson = JSON.parse(xhr.responseText);
+                if (xhr.status === 200) {
+                    Observer.next(fileJoson);
+                    Observer.complete();
+                } else {
+                    Observer.error(xhr.statusText)
+                }
+            });
+            xhr.open('GET', url);
+            xhr.send();
+        });
+    }
+   alumnosAprobados(Argumen){
+       Argumen.forEach(element => {
+           console.log(`Alumno aprovado : ${element.nombre} ${element.calificacion} `);
+       });
+   }
+   calificacionAlta(Argumen){
+       Argumen.forEach(element => {
+           console.log(`Alumno Con calificacion mas alta : ${element.nombre} ${element.calificacion} `);
+       });
+   }
 }
+var service: ServicePersonaImpl = new ServicePersonaImpl();
 click.subscribe(
     value => {
-        console.log(`click`);
-        load("starwars.json");
+         service.getAllPerson('personas.json').
+            subscribe(value => Observable.from(value)
+             .filter((x:any) => x.calificacion >= 60).toArray()
+                .subscribe(value => console.log(`${service.alumnosAprobados(value)}   ${Observable.from(value).max().toArray().subscribe(value => service.calificacionAlta(value))}`)));
     },
     error => {
         console.log(`Error: ${error}`);

@@ -1,0 +1,34 @@
+[
+    {
+        "nombre": "Arturo",
+        "calificacion": 23
+    },
+    {
+        "nombre": "Alain",
+        "calificacion": 10
+    },
+    {
+        "nombre": "Jonathan",
+        "calificacion": 85
+    },
+    {
+        "nombre": "Alejandra",
+        "calificacion": 100
+    },
+    {
+        "nombre": "Diana",
+        "calificacion": 5
+    },
+    {
+        "nombre": "Urbano",
+        "calificacion": 65
+    },
+    {
+        "nombre": "Minely",
+        "calificacion": 28
+    },
+    {
+        "nombre": "David",
+        "calificacion": 42
+    }
+]
